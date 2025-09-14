@@ -1,0 +1,512 @@
+-- Load persistence library
+local persistence = require("persistence")
+
+-- Global variables to store starting position and facing direction
+local startingPosition = nil
+local finalPosition = nil
+local startingFacing = nil
+local firstChestFull = false
+local secondChestFull = false
+local currentFacing = "north"  -- Track current facing direction (north, south, east, west)
+
+-- Debug settings - set to false to disable debug output
+local DEBUG_ENABLED = true
+
+-- Debug print function
+function debugPrint(message)
+    if DEBUG_ENABLED then
+        print("[DEBUG] " .. message)
+    end
+end
+
+-- Function to get and save starting position and facing direction
+function getStartingPosition()
+    if not startingPosition then
+        print("Getting starting position from GPS...")
+        startingPosition = persistence.getCurrentPosition()
+        if startingPosition.relative then
+            print("Warning: GPS not available, using relative positioning")
+            print("Starting position: (0, 0, 0) - relative")
+        else
+            print("Starting position: (" .. startingPosition.x .. ", " .. startingPosition.y .. ", " .. startingPosition.z .. ")")
+        end
+    end
+    checkfacingPositionOne = persistence.getCurrentPosition()
+    turtle.dig()
+    turtle.forward()
+    checkfacingPositionTwo = persistence.getCurrentPosition()
+    turtle.back()
+    if checkfacingPositionOne.z > checkfacingPositionTwo.z then
+        startingFacing = "north"
+    elseif checkfacingPositionOne.z < checkfacingPositionTwo.z then
+        startingFacing = "south"
+    elseif checkfacingPositionOne.x > checkfacingPositionTwo.x then
+        startingFacing = "east"
+    elseif checkfacingPositionOne.x < checkfacingPositionTwo.x then
+        startingFacing = "west"
+    end
+    currentFacing = startingFacing
+    print("Starting facing direction: " .. startingFacing)
+    getFinalPosition()
+    
+    return startingPosition, startingFacing
+end
+
+function getFinalPosition()
+    if startingFacing == "north" then
+        finalPosition = startingPosition.x + length, startingPosition.z + width
+    elseif startingFacing == "south" then
+        finalPosition = startingPosition.x - length, startingPosition.z - width
+    elseif startingFacing == "east" then
+        finalPosition = startingPosition.x + length, startingPosition.z - width
+    elseif startingFacing == "west" then
+        finalPosition = startingPosition.x - length, startingPosition.z + width
+    end
+    return finalPosition
+end
+
+-- Function to get current position differences from starting position
+function getCurrentPositionDifferences()
+    local currentPos = persistence.getCurrentPosition()
+    positionDiffs = persistence.calculatePositionDifferences(currentPos, startingPosition)
+    return positionDiffs
+end
+
+-- Function to calculate mining progress based on the snake pattern
+function getMiningProgress(positionDiffs, length, width)
+    local absRow = math.abs(positionDiffs.row)
+    local absCol = math.abs(positionDiffs.col)
+    
+    -- In a snake pattern, we need to determine which "row" we're in
+    -- and how far along that row we are
+    local currentRow = absRow
+    local currentCol = absCol
+    
+    -- If we're on an even row (0, 2, 4...), we're going forward
+    -- If we're on an odd row (1, 3, 5...), we're going backward
+    if currentRow % 2 == 1 then
+        -- On odd rows, we're going backward, so invert the column
+        currentCol = length - 1 - currentCol
+    end
+    
+    return {
+        row = currentRow,
+        col = currentCol,
+        totalRows = width,
+        totalCols = length
+    }
+end
+
+-- Function to check if we've completed the mining area
+function isMiningComplete()
+    if currentPosition.z == finalPosition.z and currentPosition.x == finalPosition.x then
+        return true
+    end
+    return false
+end
+
+-- Function to check if we've completed the current row
+function isRowComplete(positionDiffs)
+    local nextPosition = nil
+    local currentRow = nil
+    if currentFacing == "north" then
+        currentRow = positionDiffs.deltaZ
+    elseif currentFacing == "south" then
+        currentRow = positionDiffs.deltaZ
+    elseif currentFacing == "east" then
+        currentRow = positionDiffs.deltaX
+    elseif currentFacing == "west" then
+        currentRow = positionDiffs.deltaX
+    end
+    -- if currentRow is odd, we need to go backward
+    if currentRow % 2 == 1 then -- odd row so we need to go backward
+        if currentFacing == "north" then
+            nextPosition = startingPosition.z + width + positionDiffs.deltaZ
+        elseif currentFacing == "south" then
+            nextPosition = startingPosition.z - width + positionDiffs.deltaZ
+        elseif currentFacing == "east" then
+            nextPosition = startingPosition.x + width + positionDiffs.deltaX
+        elseif currentFacing == "west" then
+            nextPosition = startingPosition.x - width + positionDiffs.deltaX
+        end
+    else -- even row so we need to go forward
+        if currentFacing == "north" then
+            nextPosition = startingPosition.z + width + positionDiffs.deltaZ
+        elseif currentFacing == "south" then
+            nextPosition = startingPosition.z - width + positionDiffs.deltaZ
+        elseif currentFacing == "east" then
+            nextPosition = startingPosition.x + width + positionDiffs.deltaX
+        elseif currentFacing == "west" then
+            nextPosition = startingPosition.x - width + positionDiffs.deltaX
+        end
+    end
+
+    if currentPosition.z == nextPosition.z and currentPosition.x == nextPosition.x then
+        return true
+    end
+    return false
+end
+
+-- Function to update facing direction when turtle turns
+-- north(-z) -> east(+x) -> south(+z) -> west(-x)
+function updateFacingDirection(turnDirection)
+    if turnDirection == "right" then
+        if currentFacing == "north" then
+            currentFacing = "east"
+        elseif currentFacing == "east" then
+            currentFacing = "south"
+        elseif currentFacing == "south" then
+            currentFacing = "west"
+        elseif currentFacing == "west" then
+            currentFacing = "north"
+        end
+    elseif turnDirection == "left" then
+        if currentFacing == "north" then
+            currentFacing = "west"
+        elseif currentFacing == "west" then
+            currentFacing = "south"
+        elseif currentFacing == "south" then
+            currentFacing = "east"
+        elseif currentFacing == "east" then
+            currentFacing = "north"
+        end
+    end
+    persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+end
+
+function mmine()
+    
+    -- Get current position differences
+    local positionDiffs = getCurrentPositionDifferences()
+        
+    while not isMiningComplete() do
+        RefuelIfNeeded()
+        print("Row:   ", positionDiffs.row, "/", width , " | Fuel: ", turtle.getFuelLevel())
+        positionDiffs = getCurrentPositionDifferences()
+        
+        -- Save progress at the start of each row
+        local currentPos = persistence.getCurrentPosition()
+        persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+        
+        while not isRowComplete(positionDiffs) do
+            debugPrint("Mining at position: row=" .. positionDiffs.row .. " (abs=" .. math.abs(positionDiffs.row) .. "), col=" .. positionDiffs.col .. " (abs=" .. math.abs(positionDiffs.col) .. ") (target length=" .. length .. ")")
+            turtle.digDown()
+            turtle.digUp()
+            DigUntilEmpty()
+            PlaceTorch()
+            CheckForwrd()
+            
+            -- Update position differences after moving
+            positionDiffs = getCurrentPositionDifferences()
+            debugPrint("After moving: row=" .. positionDiffs.row .. " (abs=" .. math.abs(positionDiffs.row) .. "), col=" .. positionDiffs.col .. " (abs=" .. math.abs(positionDiffs.col) .. ")")
+            
+            -- Save progress after each forward movement
+            if persistence and width and length then
+                local currentPos = persistence.getCurrentPosition()
+                persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+            end
+        end
+        inMiddleOfTurn = true
+        corner()
+        inMiddleOfTurn = false
+    end
+    turtle.digUp()
+    turtle.digDown()
+end
+
+function corner()
+    if startingFacing == currentFacing then
+        if direction == "r" then
+            CornerRight()
+        else
+            CornerLeft()
+        end
+    else
+        if direction == "r" then
+            CornerLeft()
+        else
+            CornerRight()
+        end
+    end
+end
+
+function CornerRight()
+    turtle.digDown()
+    turtle.digUp()
+    turtle.turnRight()
+    updateFacingDirection("right")
+    PlaceTorch()
+    CheckForwrd()
+
+    turtle.turnRight()
+    updateFacingDirection("right")
+end
+
+function CornerLeft()
+    turtle.digDown()
+    turtle.digUp()
+    turtle.turnLeft()
+    updateFacingDirection("left")
+    PlaceTorch()
+    CheckForwrd()
+
+    turtle.turnLeft()
+    updateFacingDirection("left")
+end
+
+function comeBack(length, width)
+    local length = tonumber(length)
+    local width = tonumber(width)
+    local positionDiffs = getCurrentPositionDifferences()
+    
+    if width % 2 == 0 then
+        TrueTurn()
+        -- Move back to starting row
+        while math.abs(positionDiffs.row) > 0 do
+            turtle.forward()
+            positionDiffs = getCurrentPositionDifferences()
+            -- Save progress after each movement in comeBack
+            if persistence and width and length then
+                local currentPos = persistence.getCurrentPosition()
+                persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+            end
+        end
+        TrueTurn()
+    else
+        turtle.turnRight()
+        turtle.turnRight()
+        -- Move back to starting column
+        while math.abs(positionDiffs.col) > 0 do
+            turtle.forward()
+            positionDiffs = getCurrentPositionDifferences()
+            -- Save progress after each movement in comeBack
+            if persistence and width and length then
+                local currentPos = persistence.getCurrentPosition()
+                persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+            end
+        end
+        TrueTurn()
+        -- Move back to starting row
+        while math.abs(positionDiffs.row) > 0 do
+            turtle.forward()
+            positionDiffs = getCurrentPositionDifferences()
+            -- Save progress after each movement in comeBack
+            if persistence and width and length then
+                local currentPos = persistence.getCurrentPosition()
+                persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+            end
+        end
+        TrueTurn()
+    end
+end
+
+function TrueTurn()
+    if direction == "r" then
+        turtle.turnRight()
+        updateFacingDirection("right")
+    else
+        turtle.turnLeft()
+        updateFacingDirection("left")
+    end
+end
+
+function PlaceTorch()
+    if torchBool == true then
+        if torchesMovements % offset == 0 then
+            turtle.select(2)
+            turtle.digDown()
+            turtle.placeDown()
+        end
+    end
+    torchesMovements = torchesMovements + 1
+end
+
+function DigUntilEmpty()
+    InvCheck()
+    while turtle.detect() do
+        turtle.dig()
+        InvCheck()
+    end
+    InvCheck()
+end
+
+function CheckForwrd()
+    while turtle.forward() == false do
+        DigUntilEmpty()
+        turtle.attack()
+    end
+    -- Save progress after each forward movement
+    local currentPos = persistence.getCurrentPosition()
+    persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+end
+
+function InvCheck()
+    if turtle.getItemCount(15) > 0 then
+        if autoClearInventory then
+            InvClear()
+        else
+            print("Inventory full. Press Enter to continue mining after clearing manually.")
+            read()
+        end
+    end
+end
+
+function InvClear()
+    turtle.digDown()
+    if firstChestFull == false then
+        turtle.select(3)
+        turtle.placeDown()
+        local i = 5
+        while i <= 16 do
+            turtle.select(i)
+            if turtle.dropDown() == false then
+                firstChestFull = true
+                turtle.select(3)
+                turtle.digDown()
+                i = 16
+            else
+                turtle.dropDown()
+            end
+            i = i + 1
+        end
+    end
+    if secondChestFull == false and firstChestFull == true then
+        turtle.select(4)
+        turtle.placeDown()
+        local i = 5
+        while i <= 16 do
+            turtle.select(i)
+            if turtle.dropDown() == false then
+                secondChestFull = true
+                turtle.select(4)
+                turtle.digDown()
+                i = 16
+                print("Second chest full. Press Enter to continue mining after clearing manually.")
+                read()
+            else
+                turtle.dropDown()
+            end
+            i = i + 1
+        end
+    end
+end
+
+function RefuelIfNeeded()
+    if turtle.getFuelLevel() < 100 then
+        print("Refueling...")
+        turtle.select(1)
+        turtle.refuel(1)
+        print("Fuel level after refueling: ", turtle.getFuelLevel())
+    end
+end
+
+print("Current Fuel Level: ", turtle.getFuelLevel())
+print("Slots||Fuel-1|Torches(o)-2|Chests(o)-3|Chests(o)-4|")
+
+-- Check for saved state
+local savedState = persistence.loadMineState()
+-- Make these variables global so functions can access them
+-- Initialize with default values to prevent nil errors
+length = 0 -- how far along the length we are
+width = 0 -- how many columns we are mining
+turnDirection = "r" -- whether to turn left or right
+torchBool = 0 -- whether to place torches
+offset = 5 -- how many blocks until a torch is placed
+autoClearInventory = false -- whether to auto clear the inventory when it is full
+
+lengthCompleted = 0 -- how far along the length we are completed
+widthCompleted = 0 -- how many columns we have completed
+
+torchesMovements = 0 -- the number of torches movements
+startRow = 0 -- the row we started on
+firstChestFull = false -- whether the first chest is full
+secondChestFull = false -- whether the second chest is full
+inMiddleOfTurn = false -- whether we are in the middle of a turn
+
+if savedState and persistence.askResume("mining") then
+    print("Resuming mining operation...")
+    length = savedState.length
+    width = savedState.width
+    turnDirection = savedState.turnDirection
+    torchBool = savedState.torchBool
+    offset = savedState.offset
+    autoClearInventory = savedState.autoClearInventory
+    lengthCompleted = savedState.lengthCompleted
+    widthCompleted = savedState.widthCompleted
+    torchesMovements = savedState.torchesMovements
+    startRow = savedState.startRow
+    inMiddleOfTurn = savedState.inMiddleOfTurn
+    
+    startingPosition = savedState.startingPosition
+    startingFacing = savedState.startingFacing
+    if startingPosition then
+        if startingPosition.relative then
+            print("Using saved starting position: (0, 0, 0) - relative")
+        else
+            print("Using saved starting position: (" .. startingPosition.x .. ", " .. startingPosition.y .. ", " .. startingPosition.z .. ")")
+        end
+    else
+        print("No saved starting position found, getting current position...")
+        getStartingPosition()
+    end
+    
+    if startingFacing then
+        print("Using saved starting facing direction: " .. startingFacing)
+        currentFacing = startingFacing  -- Set current facing to match saved starting facing
+    else
+        print("No saved starting facing direction found, using current facing...")
+        getStartingPosition()
+    end
+    
+    -- Get current position differences for display
+    local currentPosDiffs = getCurrentPositionDifferences()
+    print("Resuming from row " .. currentPosDiffs.row .. " of " .. width .. ", position " .. currentPosDiffs.col .. " of " .. length)
+else
+    print("Starting new mining operation...")
+    print("MineShaft Length(how far forward from turtle start position)")
+    length = read()
+    length = tonumber(length)
+
+    print("MineShaft Width(how many columns to mine)")
+    width = read()
+    width = tonumber(width)
+
+    print("Turn left or right(left:l | right:r || default:r)")
+    direction = read()
+
+    print("Place Torches?(no-n | yes-y || default:no)")
+    torchBool = read()
+    if torchBool == "y" then
+        torchBool = true
+    else
+        torchBool = false
+    end
+
+    if torchBool == true then
+        print("Torch offset(how many blocks until a torch is placed)?")
+        offset = read()
+        offset = tonumber(offset)
+    end
+
+    print("Auto clear inventory when full? (no-n | yes-y || default:no)")
+    autoClearInventory = read()
+    if autoClearInventory == "y" then
+        autoClearInventory = true
+    else
+        autoClearInventory = false
+    end
+    
+    -- Get starting position and facing direction for new operation
+    getStartingPosition()
+    persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
+end
+
+RefuelIfNeeded()
+mmine()
+-- comeBack(length, width)
+InvClear()
+
+-- Clear saved state when operation completes
+persistence.clearMineState()
+print("Mining operation completed!")
+print("Final fuel level: " .. turtle.getFuelLevel())
