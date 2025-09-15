@@ -126,38 +126,38 @@ function isRowComplete(positionDiffs, currentFacing, width)
     local currentPosition = persistence.getCurrentPosition()
     local nextPosition = nil
     local currentRow = nil
-    debugPrint("Current facing: " .. currentFacing)
-    debugPrint("Position differences: " .. positionDiffs.deltaZ .. ", " .. positionDiffs.deltaX)
+    -- debugPrint("Current facing: " .. currentFacing)
+    -- debugPrint("Position differences: " .. positionDiffs.z .. ", " .. positionDiffs.x)
     if currentFacing == "north" then
-        currentRow = positionDiffs.deltaZ
+        currentRow = positionDiffs.z
     elseif currentFacing == "south" then
-        currentRow = positionDiffs.deltaZ
+        currentRow = positionDiffs.z
     elseif currentFacing == "east" then
-        currentRow = positionDiffs.deltaX
+        currentRow = positionDiffs.x
     elseif currentFacing == "west" then
-        currentRow = positionDiffs.deltaX
+        currentRow = positionDiffs.x
     end
-    debugPrint("Current row: " .. currentRow)
+    -- debugPrint("Current row: " .. currentRow)
     -- if currentRow is odd, we need to go backward
     if currentRow % 2 == 1 then -- odd row so we need to go backward
         if currentFacing == "north" then
-            nextPosition = startingPosition.z + width + positionDiffs.deltaZ
+            nextPosition = startingPosition.z + width + positionDiffs.z
         elseif currentFacing == "south" then
-            nextPosition = startingPosition.z - width + positionDiffs.deltaZ
+            nextPosition = startingPosition.z - width + positionDiffs.z
         elseif currentFacing == "east" then
-            nextPosition = startingPosition.x + width + positionDiffs.deltaX
+            nextPosition = startingPosition.x + width + positionDiffs.x
         elseif currentFacing == "west" then
-            nextPosition = startingPosition.x - width + positionDiffs.deltaX
+            nextPosition = startingPosition.x - width + positionDiffs.x
         end
     else -- even row so we need to go forward
         if currentFacing == "north" then
-            nextPosition = startingPosition.z + width + positionDiffs.deltaZ
+            nextPosition = startingPosition.z + width + positionDiffs.z
         elseif currentFacing == "south" then
-            nextPosition = startingPosition.z - width + positionDiffs.deltaZ
+            nextPosition = startingPosition.z - width + positionDiffs.z
         elseif currentFacing == "east" then
-            nextPosition = startingPosition.x + width + positionDiffs.deltaX
+            nextPosition = startingPosition.x + width + positionDiffs.x
         elseif currentFacing == "west" then
-            nextPosition = startingPosition.x - width + positionDiffs.deltaX
+            nextPosition = startingPosition.x - width + positionDiffs.x
         end
     end
 
