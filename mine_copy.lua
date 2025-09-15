@@ -532,6 +532,7 @@ if savedState and persistence.askResume("mining") then
     
     startingPosition = savedState.startingPosition
     startingFacing = savedState.startingFacing
+    finalPosition = savedState.finalPosition
     -- debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
     -- debugPrint("Starting facing: " .. startingFacing)
     debugPrint("Final position: " .. finalPosition.x .. ", " .. finalPosition.z)
