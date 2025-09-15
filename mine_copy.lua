@@ -159,23 +159,23 @@ function getNextPosition(currentPosition, positionDiffs, currentFacing, width)
     -- if currentRow is odd, we need to go backward
     if currentRow % 2 == 1 then -- odd row so we need to go backward
         if currentFacing == "north" then
-            nextPosition = startingPosition.z + width + positionDiffs.z
+            nextPosition = startingPosition.z + width
         elseif currentFacing == "south" then
-            nextPosition = startingPosition.z - width + positionDiffs.z
+            nextPosition = startingPosition.z - width
         elseif currentFacing == "east" then
-            nextPosition = startingPosition.x + width + positionDiffs.x
+            nextPosition = startingPosition.x - width
         elseif currentFacing == "west" then
-            nextPosition = startingPosition.x - width + positionDiffs.x
+            nextPosition = startingPosition.x + width
         end
     else -- even row so we need to go forward
         if currentFacing == "north" then
-            nextPosition = startingPosition.z + width + positionDiffs.z
+            nextPosition = startingPosition.z - width
         elseif currentFacing == "south" then
-            nextPosition = startingPosition.z - width + positionDiffs.z
+            nextPosition = startingPosition.z + width
         elseif currentFacing == "east" then
-            nextPosition = startingPosition.x + width + positionDiffs.x
+            nextPosition = startingPosition.x + width
         elseif currentFacing == "west" then
-            nextPosition = startingPosition.x - width + positionDiffs.x
+            nextPosition = startingPosition.x - width
         end
     end
     if isX then
@@ -233,7 +233,7 @@ function mmine()
         persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
         
         while not isRowComplete(positionDiffs, currentFacing, width) do
-            debugPrint("Mining at position: row=" .. positionDiffs.row .. " (abs=" .. math.abs(positionDiffs.row) .. "), col=" .. positionDiffs.col .. " (abs=" .. math.abs(positionDiffs.col) .. ") (target length=" .. length .. ")")
+            debugPrint("Mining at position: row=" .. positionDiffs.z .. " (abs=" .. math.abs(positionDiffs.z) .. "), col=" .. positionDiffs.x .. " (abs=" .. math.abs(positionDiffs.x) .. ") (target length=" .. length .. ")")
             turtle.digDown()
             turtle.digUp()
             DigUntilEmpty()
@@ -242,7 +242,7 @@ function mmine()
             
             -- Update position differences after moving
             positionDiffs = getCurrentPositionDifferences()
-            debugPrint("After moving: row=" .. positionDiffs.row .. " (abs=" .. math.abs(positionDiffs.row) .. "), col=" .. positionDiffs.col .. " (abs=" .. math.abs(positionDiffs.col) .. ")")
+            -- debugPrint("After moving: row=" .. positionDiffs.z .. " (abs=" .. math.abs(positionDiffs.z) .. "), col=" .. positionDiffs.x .. " (abs=" .. math.abs(positionDiffs.x) .. ")")
             
             -- Save progress after each forward movement
             if persistence and width and length then
@@ -504,7 +504,7 @@ if savedState and persistence.askResume("mining") then
     
     -- Get current position differences for display
     local currentPosDiffs = getCurrentPositionDifferences()
-    print("Resuming from row " .. currentPosDiffs.row .. " of " .. width .. ", position " .. currentPosDiffs.col .. " of " .. length)
+    print("Resuming from row " .. currentPosDiffs.z .. " of " .. width .. ", position " .. currentPosDiffs.x .. " of " .. length)
 else
     print("Starting new mining operation...")
     print("MineShaft Length(how far forward from turtle start position)")
