@@ -80,10 +80,10 @@ end
 -- Function to get current position differences from starting position
 function getCurrentPositionDifferences()
     local currentPos = persistence.getCurrentPosition()
-    debugPrint("Current position: " .. currentPos.x .. ", " .. currentPos.z)
-    debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
+    -- debugPrint("Current position: " .. currentPos.x .. ", " .. currentPos.z)
+    -- debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
     positionDiffs = persistence.calculatePositionDifferences(currentPos, startingPosition)
-    debugPrint("Position differences: " .. positionDiffs.x .. ", " .. positionDiffs.z)
+    -- debugPrint("Position differences: " .. positionDiffs.x .. ", " .. positionDiffs.z)
     return positionDiffs
 end
 
@@ -125,10 +125,10 @@ end
 function isRowComplete(positionDiffs, currentFacing, width)
     local currentPosition = persistence.getCurrentPosition()
     local nextPosition = getNextPosition(currentPosition, positionDiffs, currentFacing, width)
-    debugPrint("Current position: " .. currentPosition.x .. ", " .. currentPosition.z)
-    debugPrint("Next position: " .. nextPosition.x .. ", " .. nextPosition.z)
-    error("Current position: " .. currentPosition.x .. ", " .. currentPosition.z)
-    error("Next position: " .. nextPosition.x .. ", " .. nextPosition.z)
+    debugPrint("Cur-pos: " .. currentPosition.x .. ", " .. currentPosition.z)
+    debugPrint("Nxt-pos: " .. nextPosition.x .. ", " .. nextPosition.z)
+    -- error("Cur-pos: " .. currentPosition.x .. ", " .. currentPosition.z)
+    -- error("Nxt-pos: " .. nextPosition.x .. ", " .. nextPosition.z)
 
     if currentPosition.z == nextPosition.z and currentPosition.x == nextPosition.x then
         return true
@@ -233,7 +233,7 @@ function mmine()
         persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
         
         while not isRowComplete(positionDiffs, currentFacing, width) do
-            debugPrint("Mining at position: row=" .. positionDiffs.z .. " (abs=" .. math.abs(positionDiffs.z) .. "), col=" .. positionDiffs.x .. " (abs=" .. math.abs(positionDiffs.x) .. ") (target length=" .. length .. ")")
+            debugPrint("pos-diffs=" .. positionDiffs.z .. "," .. positionDiffs.x .. "(len=" .. length .. ")")
             turtle.digDown()
             turtle.digUp()
             DigUntilEmpty()
