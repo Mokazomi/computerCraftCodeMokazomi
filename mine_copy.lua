@@ -535,6 +535,7 @@ if savedState and persistence.askResume("mining") then
     else
         print("No saved starting position found, getting current position...")
         getStartingPosition()
+        finalPosition = getFinalPosition()
     end
     
     if startingFacing then
@@ -543,6 +544,7 @@ if savedState and persistence.askResume("mining") then
     else
         print("No saved starting facing direction found, using current facing...")
         getStartingPosition()
+        finalPosition = getFinalPosition()
     end
     
     -- Get current position differences for display
