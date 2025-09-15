@@ -53,17 +53,28 @@ function getStartingPosition()
 end
 
 function getFinalPosition()
-    local finalPosition = nil
     if startingFacing == "north" then
-        finalPosition = startingPosition.x + length, startingPosition.z + width
+        return {
+            x = startingPosition.x + length,
+            z = startingPosition.z + width
+        }
     elseif startingFacing == "south" then
-        finalPosition = startingPosition.x - length, startingPosition.z - width
+        return {
+            x = startingPosition.x - length,
+            z = startingPosition.z - width
+        }
     elseif startingFacing == "east" then
-        finalPosition = startingPosition.x + length, startingPosition.z - width
+        return {
+            x = startingPosition.x + length,
+            z = startingPosition.z - width
+        }
     elseif startingFacing == "west" then
-        finalPosition = startingPosition.x - length, startingPosition.z + width
+        return {
+            x = startingPosition.x - length,
+            z = startingPosition.z + width
+        }
     end
-    return finalPosition
+    return nil
 end
 
 -- Function to get current position differences from starting position
