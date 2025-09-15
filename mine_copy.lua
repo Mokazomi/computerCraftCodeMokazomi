@@ -99,6 +99,7 @@ end
 
 -- Function to check if we've completed the mining area
 function isMiningComplete()
+    local currentPosition = persistence.getCurrentPosition()
     if currentPosition.z == finalPosition.z and currentPosition.x == finalPosition.x then
         return true
     end
@@ -107,6 +108,7 @@ end
 
 -- Function to check if we've completed the current row
 function isRowComplete(positionDiffs)
+    local currentPosition = persistence.getCurrentPosition()
     local nextPosition = nil
     local currentRow = nil
     if currentFacing == "north" then
