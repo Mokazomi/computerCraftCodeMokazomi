@@ -58,26 +58,26 @@ end
 function getFinalPosition()
     if startingFacing == "north" then
         if direction == "r" then
-        return {
-                x = startingPosition.x - length,
-                z = startingPosition.z + width
+            return {
+                x = startingPosition.x + width,
+                z = startingPosition.z - length
             }
         else
             return {
-                x = startingPosition.x - length,
-                z = startingPosition.z - width
+                x = startingPosition.x - width,
+                z = startingPosition.z - length
             }
         end
     elseif startingFacing == "south" then
         if direction == "r" then
             return {
-                x = startingPosition.x + length,
-                z = startingPosition.z - width
+                x = startingPosition.x - width,
+                z = startingPosition.z + length
             }
         else
             return {
-                x = startingPosition.x + length,
-                z = startingPosition.z + width
+                x = startingPosition.x + width,
+                z = startingPosition.z + length
             }
         end
     elseif startingFacing == "east" then
