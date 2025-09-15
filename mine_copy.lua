@@ -159,15 +159,27 @@ function getNextPosition(currentPosition, positionDiffs, currentFacing, width)
         isX = true
     end
     -- debugPrint("Current row: " .. currentRow)
-
-    if currentFacing == "north" then
-        nextPosition = startingPosition.z - width
-    elseif currentFacing == "south" then
-        nextPosition = startingPosition.z + width
-    elseif currentFacing == "east" then
-        nextPosition = startingPosition.x + width
-    elseif currentFacing == "west" then
-        nextPosition = startingPosition.x - width
+    -- if currentRow is odd, we need to go backward
+    if currentRow % 2 == 1 then -- odd row so we need to go backward
+        if currentFacing == "north" then
+            nextPosition = startingPosition.z
+        elseif currentFacing == "south" then
+            nextPosition = startingPosition.z
+        elseif currentFacing == "east" then
+            nextPosition = startingPosition.x
+        elseif currentFacing == "west" then
+            nextPosition = startingPosition.x
+        end
+    else -- even row so we need to go forward
+        if currentFacing == "north" then
+            nextPosition = startingPosition.z - width
+        elseif currentFacing == "south" then
+            nextPosition = startingPosition.z + width
+        elseif currentFacing == "east" then
+            nextPosition = startingPosition.x + width
+        elseif currentFacing == "west" then
+            nextPosition = startingPosition.x - width
+        end
     end
     if isX then
         return {

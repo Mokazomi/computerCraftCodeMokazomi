@@ -14,7 +14,7 @@ function persistence.saveState(filename, state)
     if file then
         file.write(textutils.serialize(state))
         file.close()
-        print("State saved to " .. filename)
+        -- print("State saved to " .. filename)
         return true
     else
         print("Error: Could not save state to " .. filename)
