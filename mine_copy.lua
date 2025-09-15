@@ -80,10 +80,10 @@ end
 -- Function to get current position differences from starting position
 function getCurrentPositionDifferences()
     local currentPos = persistence.getCurrentPosition()
-    print("Current position: " .. currentPos.x .. ", " .. currentPos.z)
-    print("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
+    debugPrint("Current position: " .. currentPos.x .. ", " .. currentPos.z)
+    debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
     positionDiffs = persistence.calculatePositionDifferences(currentPos, startingPosition)
-    print("Position differences: " .. positionDiffs.x .. ", " .. positionDiffs.z)
+    debugPrint("Position differences: " .. positionDiffs.x .. ", " .. positionDiffs.z)
     return positionDiffs
 end
 
@@ -122,10 +122,11 @@ function isMiningComplete()
 end
 
 -- Function to check if we've completed the current row
-function isRowComplete(positionDiffs)
+function isRowComplete(positionDiffs, currentFacing, width)
     local currentPosition = persistence.getCurrentPosition()
     local nextPosition = nil
     local currentRow = nil
+    debugPrint("Current facing: " .. currentFacing)
     if currentFacing == "north" then
         currentRow = positionDiffs.deltaZ
     elseif currentFacing == "south" then
@@ -135,6 +136,7 @@ function isRowComplete(positionDiffs)
     elseif currentFacing == "west" then
         currentRow = positionDiffs.deltaX
     end
+    debugPrint("Current row: " .. currentRow)
     -- if currentRow is odd, we need to go backward
     if currentRow % 2 == 1 then -- odd row so we need to go backward
         if currentFacing == "north" then
@@ -205,7 +207,7 @@ function mmine()
         local currentPos = persistence.getCurrentPosition()
         persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
         
-        while not isRowComplete(positionDiffs) do
+        while not isRowComplete(positionDiffs, currentFacing, width) do
             debugPrint("Mining at position: row=" .. positionDiffs.row .. " (abs=" .. math.abs(positionDiffs.row) .. "), col=" .. positionDiffs.col .. " (abs=" .. math.abs(positionDiffs.col) .. ") (target length=" .. length .. ")")
             turtle.digDown()
             turtle.digUp()
