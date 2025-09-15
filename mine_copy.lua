@@ -146,40 +146,28 @@ function getNextPosition(currentPosition, positionDiffs, currentFacing, width)
     -- debugPrint("Current facing: " .. currentFacing)
     -- debugPrint("Position differences: " .. positionDiffs.z .. ", " .. positionDiffs.x)
     if currentFacing == "north" then
-        currentRow = positionDiffs.z
+        currentRow = positionDiffs.x
         isX = false
     elseif currentFacing == "south" then
-        currentRow = positionDiffs.z
+        currentRow = positionDiffs.x
         isX = false
     elseif currentFacing == "east" then
-        currentRow = positionDiffs.x
+        currentRow = positionDiffs.z
         isX = true
     elseif currentFacing == "west" then
-        currentRow = positionDiffs.x
+        currentRow = positionDiffs.z
         isX = true
     end
     -- debugPrint("Current row: " .. currentRow)
-    -- if currentRow is odd, we need to go backward
-    if currentRow % 2 == 1 then -- odd row so we need to go backward
-        if currentFacing == "north" then
-            nextPosition = startingPosition.z + width
-        elseif currentFacing == "south" then
-            nextPosition = startingPosition.z - width
-        elseif currentFacing == "east" then
-            nextPosition = startingPosition.x - width
-        elseif currentFacing == "west" then
-            nextPosition = startingPosition.x + width
-        end
-    else -- even row so we need to go forward
-        if currentFacing == "north" then
-            nextPosition = startingPosition.z - width
-        elseif currentFacing == "south" then
-            nextPosition = startingPosition.z + width
-        elseif currentFacing == "east" then
-            nextPosition = startingPosition.x + width
-        elseif currentFacing == "west" then
-            nextPosition = startingPosition.x - width
-        end
+
+    if currentFacing == "north" then
+        nextPosition = startingPosition.z - width
+    elseif currentFacing == "south" then
+        nextPosition = startingPosition.z + width
+    elseif currentFacing == "east" then
+        nextPosition = startingPosition.x + width
+    elseif currentFacing == "west" then
+        nextPosition = startingPosition.x - width
     end
     if isX then
         return {
