@@ -127,6 +127,7 @@ function isRowComplete(positionDiffs, currentFacing, width)
     local nextPosition = nil
     local currentRow = nil
     debugPrint("Current facing: " .. currentFacing)
+    debugPrint("Position differences: " .. positionDiffs.deltaZ .. ", " .. positionDiffs.deltaX)
     if currentFacing == "north" then
         currentRow = positionDiffs.deltaZ
     elseif currentFacing == "south" then
