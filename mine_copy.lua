@@ -281,9 +281,11 @@ function mmine()
                 persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
             end
         end
-        inMiddleOfTurn = true
-        corner()
-        inMiddleOfTurn = false
+        if not isMiningComplete() then
+            inMiddleOfTurn = true
+            corner()
+            inMiddleOfTurn = false
+        end
     end
     turtle.digUp()
     turtle.digDown()
@@ -443,6 +445,9 @@ function InvClear()
                 turtle.dropDown()
             end
             i = i + 1
+            if turtle.getItemCount(i) == 0 then
+                break
+            end
         end
     end
     if secondChestFull == false and firstChestFull == true then
@@ -462,6 +467,9 @@ function InvClear()
                 turtle.dropDown()
             end
             i = i + 1
+            if turtle.getItemCount(i) == 0 then
+                break
+            end
         end
     end
 end
