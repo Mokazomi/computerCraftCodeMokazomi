@@ -124,18 +124,36 @@ end
 -- Function to check if we've completed the current row
 function isRowComplete(positionDiffs, currentFacing, width)
     local currentPosition = persistence.getCurrentPosition()
+    local nextPosition = getNextPosition(currentPosition, positionDiffs, currentFacing, width)
+    debugPrint("Current position: " .. currentPosition.x .. ", " .. currentPosition.z)
+    debugPrint("Next position: " .. nextPosition.x .. ", " .. nextPosition.z)
+    error("Current position: " .. currentPosition.x .. ", " .. currentPosition.z)
+    error("Next position: " .. nextPosition.x .. ", " .. nextPosition.z)
+
+    if currentPosition.z == nextPosition.z and currentPosition.x == nextPosition.x then
+        return true
+    end
+    return false
+end
+
+function getNextPosition(currentPosition, positionDiffs, currentFacing, width)
     local nextPosition = nil
     local currentRow = nil
+    local isX = false
     -- debugPrint("Current facing: " .. currentFacing)
     -- debugPrint("Position differences: " .. positionDiffs.z .. ", " .. positionDiffs.x)
     if currentFacing == "north" then
         currentRow = positionDiffs.z
+        isX = false
     elseif currentFacing == "south" then
         currentRow = positionDiffs.z
+        isX = false
     elseif currentFacing == "east" then
         currentRow = positionDiffs.x
+        isX = true
     elseif currentFacing == "west" then
         currentRow = positionDiffs.x
+        isX = true
     end
     -- debugPrint("Current row: " .. currentRow)
     -- if currentRow is odd, we need to go backward
@@ -160,11 +178,17 @@ function isRowComplete(positionDiffs, currentFacing, width)
             nextPosition = startingPosition.x - width + positionDiffs.x
         end
     end
-
-    if currentPosition.z == nextPosition.z and currentPosition.x == nextPosition.x then
-        return true
+    if isX then
+        return {
+            x = nextPosition,
+            z = currentPosition.z
+        }
+    else
+        return {
+            x = currentPosition.x,
+            z = nextPosition
+        }
     end
-    return false
 end
 
 -- Function to update facing direction when turtle turns
