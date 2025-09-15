@@ -533,23 +533,49 @@ if savedState and persistence.askResume("mining") then
     startingPosition = savedState.startingPosition
     startingFacing = savedState.startingFacing
     finalPosition = savedState.finalPosition
-    -- debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
-    -- debugPrint("Starting facing: " .. startingFacing)
+    debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
+    debugPrint("Starting facing: " .. startingFacing)
     debugPrint("Final position: " .. finalPosition.x .. ", " .. finalPosition.z)
     debugPrint("Current facing: " .. currentFacing)
     debugPrint("Length: " .. length)
     debugPrint("Width: " .. width)
     debugPrint("Turn direction: " .. turnDirection)
-    debugPrint("Torch bool: " .. torchBool)
+    
+    if torchBool == true then
+        debugPrint("Torch bool: true")
+    else
+        debugPrint("Torch bool: false")
+    end
     debugPrint("Offset: " .. offset)
-    debugPrint("Auto clear inventory: " .. autoClearInventory)
+
+    if autoClearInventory == true then
+        debugPrint("Auto clear inventory: true")
+    else
+        debugPrint("Auto clear inventory: false")
+    end
     debugPrint("Length completed: " .. lengthCompleted)
     debugPrint("Width completed: " .. widthCompleted)
     debugPrint("Torches movements: " .. torchesMovements)
     debugPrint("Start row: " .. startRow)
-    debugPrint("In middle of turn: " .. inMiddleOfTurn)
-    debugPrint("First chest full: " .. firstChestFull)
-    debugPrint("Second chest full: " .. secondChestFull)
+
+    if inMiddleOfTurn == true then
+        debugPrint("In middle of turn: true")
+    else
+        debugPrint("In middle of turn: false")
+    end
+
+    if firstChestFull == true then
+        debugPrint("First chest full: true")
+    else
+        debugPrint("First chest full: false")
+    end
+
+    if secondChestFull == true then
+        debugPrint("Second chest full: true")
+    else
+        debugPrint("Second chest full: false")
+    end
+
     if startingPosition then
         if startingPosition.relative then
             print("Using saved starting position: (0, 0, 0) - relative")
