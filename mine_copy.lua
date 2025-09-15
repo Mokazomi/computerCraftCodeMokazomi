@@ -80,7 +80,10 @@ end
 -- Function to get current position differences from starting position
 function getCurrentPositionDifferences()
     local currentPos = persistence.getCurrentPosition()
+    print("Current position: " .. currentPos.x .. ", " .. currentPos.z)
+    print("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
     positionDiffs = persistence.calculatePositionDifferences(currentPos, startingPosition)
+    print("Position differences: " .. positionDiffs.x .. ", " .. positionDiffs.z)
     return positionDiffs
 end
 
