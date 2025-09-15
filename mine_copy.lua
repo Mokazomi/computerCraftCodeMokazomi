@@ -47,12 +47,13 @@ function getStartingPosition()
     end
     currentFacing = startingFacing
     print("Starting facing direction: " .. startingFacing)
-    getFinalPosition()
+    finalPosition = getFinalPosition()
     
     return startingPosition, startingFacing
 end
 
 function getFinalPosition()
+    local finalPosition = nil
     if startingFacing == "north" then
         finalPosition = startingPosition.x + length, startingPosition.z + width
     elseif startingFacing == "south" then
