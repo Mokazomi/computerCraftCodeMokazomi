@@ -576,30 +576,6 @@ if savedState and persistence.askResume("mining") then
         debugPrint("Second chest full: false")
     end
 
-    if startingPosition then
-        if startingPosition.relative then
-            print("Using saved starting position: (0, 0, 0) - relative")
-        else
-            print("Using saved starting position: (" .. startingPosition.x .. ", " .. startingPosition.y .. ", " .. startingPosition.z .. ")")
-        end
-    else
-        print("No saved starting position found, getting current position...")
-        getStartingPosition()
-        finalPosition = getFinalPosition()
-    end
-    
-    if startingFacing then
-        print("Using saved starting facing direction: " .. startingFacing)
-        currentFacing = startingFacing  -- Set current facing to match saved starting facing
-    else
-        print("No saved starting facing direction found, using current facing...")
-        getStartingPosition()
-        finalPosition = getFinalPosition()
-    end
-    
-    -- Get current position differences for display
-    local currentPosDiffs = getCurrentPositionDifferences()
-    print("Resuming from row " .. currentPosDiffs.z .. " of " .. width .. ", position " .. currentPosDiffs.x .. " of " .. length)
 else
     print("Starting new mining operation...")
     print("MineShaft Length(how far forward from turtle start position)")
