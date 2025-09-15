@@ -57,27 +57,54 @@ end
 
 function getFinalPosition()
     if startingFacing == "north" then
+        if direction == "r" then
         return {
-            x = startingPosition.x + length,
-            z = startingPosition.z + width
-        }
+                x = startingPosition.x - length,
+                z = startingPosition.z + width
+            }
+        else
+            return {
+                x = startingPosition.x - length,
+                z = startingPosition.z - width
+            }
+        end
     elseif startingFacing == "south" then
-        return {
-            x = startingPosition.x - length,
-            z = startingPosition.z - width
-        }
+        if direction == "r" then
+            return {
+                x = startingPosition.x + length,
+                z = startingPosition.z - width
+            }
+        else
+            return {
+                x = startingPosition.x + length,
+                z = startingPosition.z + width
+            }
+        end
     elseif startingFacing == "east" then
-        return {
-            x = startingPosition.x + length,
-            z = startingPosition.z - width
-        }
+        if direction == "r" then
+            return {
+                x = startingPosition.x + length,
+                z = startingPosition.z + width
+            }
+        else
+            return {
+                x = startingPosition.x + length,
+                z = startingPosition.z - width
+            }
+        end
     elseif startingFacing == "west" then
-        return {
-            x = startingPosition.x - length,
-            z = startingPosition.z + width
-        }
+        if direction == "r" then
+            return {
+                x = startingPosition.x - length,
+                z = startingPosition.z - width
+            }
+        else
+            return {
+                x = startingPosition.x - length,
+                z = startingPosition.z + width
+            }
+        end
     end
-    return nil
 end
 
 -- Function to get current position differences from starting position
@@ -118,6 +145,7 @@ end
 -- Function to check if we've completed the mining area
 function isMiningComplete()
     local currentPosition = persistence.getCurrentPosition()
+    debugPrint("Fin-pos: " .. finalPosition.x .. ", " .. finalPosition.z)
     if currentPosition.z == finalPosition.z and currentPosition.x == finalPosition.x then
         return true
     end
