@@ -585,6 +585,7 @@ else
     
     -- Get starting position and facing direction for new operation
     getStartingPosition()
+    finalPosition = getFinalPosition()
     persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
 end
 
