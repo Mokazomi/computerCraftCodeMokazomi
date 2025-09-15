@@ -16,6 +16,9 @@ local DEBUG_ENABLED = true
 function debugPrint(message)
     if DEBUG_ENABLED then
         print("[DEBUG] " .. message)
+        local logFile = fs.open("debug_log.txt", "a")
+        logFile.writeLine("[DEBUG] " .. message)
+        logFile.close()
     end
 end
 
@@ -446,6 +449,10 @@ end
 
 print("Current Fuel Level: ", turtle.getFuelLevel())
 print("Slots||Fuel-1|Torches(o)-2|Chests(o)-3|Chests(o)-4|")
+-- INSERT_YOUR_CODE
+local logFile = fs.open("debug_log.txt", "w")
+logFile.close()
+
 
 -- Check for saved state
 local savedState = persistence.loadMineState()
