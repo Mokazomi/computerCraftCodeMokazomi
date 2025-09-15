@@ -230,8 +230,8 @@ end
 
 -- Function to update facing direction when turtle turns
 -- north(-z) -> east(+x) -> south(+z) -> west(-x)
-function updateFacingDirection(turnDirection)
-    if turnDirection == "right" then
+function updateFacingDirection(turnedDirection)
+    if turnedDirection == "right" then
         if currentFacing == "north" then
             currentFacing = "east"
         elseif currentFacing == "east" then
@@ -241,7 +241,7 @@ function updateFacingDirection(turnDirection)
         elseif currentFacing == "west" then
             currentFacing = "north"
         end
-    elseif turnDirection == "left" then
+    elseif turnedDirection == "left" then
         if currentFacing == "north" then
             currentFacing = "west"
         elseif currentFacing == "west" then
@@ -540,7 +540,7 @@ if savedState and persistence.askResume("mining") then
     debugPrint("Length: " .. length)
     debugPrint("Width: " .. width)
     debugPrint("Turn direction: " .. turnDirection)
-    
+
     if torchBool == true then
         debugPrint("Torch bool: true")
     else
