@@ -34,6 +34,15 @@ function getStartingPosition()
             print("Starting position: (" .. startingPosition.x .. ", " .. startingPosition.y .. ", " .. startingPosition.z .. ")")
         end
     end
+    startingFacing = getStartingFacing()
+    currentFacing = startingFacing
+    print("Starting facing direction: " .. startingFacing)
+    finalPosition = getFinalPosition()
+    
+    return startingPosition, startingFacing
+end
+
+function getStartingFacing()
     checkfacingPositionOne = persistence.getCurrentPosition()
     turtle.dig()
     turtle.forward()
@@ -48,11 +57,8 @@ function getStartingPosition()
     elseif checkfacingPositionOne.x < checkfacingPositionTwo.x then
         startingFacing = "west"
     end
-    currentFacing = startingFacing
-    print("Starting facing direction: " .. startingFacing)
-    finalPosition = getFinalPosition()
-    
-    return startingPosition, startingFacing
+    debugPrint("Starting facing direction: " .. startingFacing)
+    return startingFacing
 end
 
 function getFinalPosition()
@@ -526,8 +532,8 @@ if savedState and persistence.askResume("mining") then
     
     startingPosition = savedState.startingPosition
     startingFacing = savedState.startingFacing
-    debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
-    debugPrint("Starting facing: " .. startingFacing)
+    -- debugPrint("Starting position: " .. startingPosition.x .. ", " .. startingPosition.z)
+    -- debugPrint("Starting facing: " .. startingFacing)
     debugPrint("Final position: " .. finalPosition.x .. ", " .. finalPosition.z)
     debugPrint("Current facing: " .. currentFacing)
     debugPrint("Length: " .. length)
@@ -605,6 +611,7 @@ else
     -- Get starting position and facing direction for new operation
     getStartingPosition()
     finalPosition = getFinalPosition()
+    startingFacing = getStartingFacing()
     persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
 end
 
