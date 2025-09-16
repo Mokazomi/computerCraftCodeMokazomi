@@ -529,7 +529,8 @@ if savedState and persistence.askResume("mining") then
     torchesMovements = savedState.torchesMovements
     startRow = savedState.startRow
     inMiddleOfTurn = savedState.inMiddleOfTurn
-    
+
+    currentFacing = savedState.currentFacing
     startingPosition = savedState.startingPosition
     startingFacing = savedState.startingFacing
     finalPosition = savedState.finalPosition
