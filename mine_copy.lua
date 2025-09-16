@@ -63,7 +63,7 @@ end
 
 function getFinalPosition()
     if startingFacing == "north" then
-        if direction == "r" then
+        if turnDirection == "r" then
             return {
                 x = startingPosition.x + width,
                 z = startingPosition.z - length
@@ -75,7 +75,7 @@ function getFinalPosition()
             }
         end
     elseif startingFacing == "south" then
-        if direction == "r" then
+        if turnDirection == "r" then
             return {
                 x = startingPosition.x - width,
                 z = startingPosition.z + length
@@ -87,7 +87,7 @@ function getFinalPosition()
             }
         end
     elseif startingFacing == "east" then
-        if direction == "r" then
+        if turnDirection == "r" then
             return {
                 x = startingPosition.x + length,
                 z = startingPosition.z + width
@@ -99,7 +99,7 @@ function getFinalPosition()
             }
         end
     elseif startingFacing == "west" then
-        if direction == "r" then
+        if turnDirection == "r" then
             return {
                 x = startingPosition.x - length,
                 z = startingPosition.z - width
@@ -270,7 +270,7 @@ function mmine()
         persistence.saveMineState(startingPosition, finalPosition, startingFacing, currentFacing, length, width, turnDirection, torchBool, offset, autoClearInventory, lengthCompleted, widthCompleted, torchesMovements, startRow, inMiddleOfTurn)
         
         while not isRowComplete(positionDiffs, currentFacing, width) do
-            debugPrint("pos-diffs=" .. positionDiffs.z .. "," .. positionDiffs.x .. "(len=" .. length .. ")")
+            debugPrint("pos-diffs=" .. positionDiffs.z .. "," .. positionDiffs.x .. "(len=" .. length .. ")||cur-facing=" .. currentFacing)
             turtle.digDown()
             turtle.digUp()
             DigUntilEmpty()
@@ -299,13 +299,13 @@ end
 
 function corner()
     if startingFacing == currentFacing then
-        if direction == "r" then
+        if turnDirection == "r" then
             CornerRight()
         else
             CornerLeft()
         end
     else
-        if direction == "r" then
+        if turnDirection == "r" then
             CornerLeft()
         else
             CornerRight()
@@ -384,7 +384,7 @@ function comeBack(length, width)
 end
 
 function TrueTurn()
-    if direction == "r" then
+    if turnDirection == "r" then
         turtle.turnRight()
         updateFacingDirection("right")
     else
@@ -588,7 +588,7 @@ else
     width = tonumber(width)
 
     print("Turn left or right(left:l | right:r || default:r)")
-    direction = read()
+    turnDirection = read()
 
     print("Place Torches?(no-n | yes-y || default:no)")
     torchBool = read()
