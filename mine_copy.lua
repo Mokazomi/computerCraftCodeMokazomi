@@ -445,7 +445,7 @@ function InvClear()
             if turtle.getItemCount(i) == 0 then
                 break
             end
-            if turtle.dropDown() == false then
+            elseif turtle.dropDown() == false then
                 firstChestFull = true
                 turtle.select(3)
                 turtle.digDown()
@@ -468,7 +468,7 @@ function InvClear()
             if turtle.getItemCount(i) == 0 then
                 break
             end
-            if turtle.dropDown() == false then
+            elseif turtle.dropDown() == false then
                 secondChestFull = true
                 turtle.select(4)
                 turtle.digDown()
