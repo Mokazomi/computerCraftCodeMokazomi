@@ -446,7 +446,7 @@ function InvClear()
                 firstChestFull = true
                 turtle.select(3)
                 turtle.digDown()
-                i = 16
+                i = 15
             else
                 turtle.dropDown()
             end
@@ -466,7 +466,7 @@ function InvClear()
                 secondChestFull = true
                 turtle.select(4)
                 turtle.digDown()
-                i = 16
+                i = 15
                 print("Second chest full. Press Enter to continue mining after clearing manually.")
                 read()
             else
