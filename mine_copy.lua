@@ -15,7 +15,7 @@ local DEBUG_ENABLED = true
 -- Debug print function
 function debugPrint(message)
     if DEBUG_ENABLED then
-        print("[DEBUG] " .. message)
+        print("[DB]" .. message)
         local logFile = fs.open("debug_log.txt", "a")
         logFile.writeLine("[DEBUG] " .. message)
         logFile.close()
