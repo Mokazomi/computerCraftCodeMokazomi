@@ -52,9 +52,9 @@ function getStartingFacing()
         startingFacing = "north"
     elseif checkfacingPositionOne.z < checkfacingPositionTwo.z then
         startingFacing = "south"
-    elseif checkfacingPositionOne.x > checkfacingPositionTwo.x then
-        startingFacing = "east"
     elseif checkfacingPositionOne.x < checkfacingPositionTwo.x then
+        startingFacing = "east"
+    elseif checkfacingPositionOne.x > checkfacingPositionTwo.x then
         startingFacing = "west"
     end
     debugPrint("Starting facing direction: " .. startingFacing)
