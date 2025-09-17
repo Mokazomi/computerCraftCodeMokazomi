@@ -455,9 +455,6 @@ function InvClear()
                 turtle.dropDown()
             end
             i = i + 1
-            if turtle.getItemCount(i) == 0 then
-                break
-            end
         end
     end
     if secondChestFull == false and firstChestFull == true then
@@ -481,9 +478,6 @@ function InvClear()
                 turtle.dropDown()
             end
             i = i + 1
-            if turtle.getItemCount(i) == 0 then
-                break
-            end
         end
     end
 end
