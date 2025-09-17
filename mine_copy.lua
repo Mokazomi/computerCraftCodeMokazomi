@@ -442,11 +442,14 @@ function InvClear()
         local i = 5
         while i <= 16 do
             turtle.select(i)
+            if turtle.getItemCount(i) == 0 then
+                break
+            end
             if turtle.dropDown() == false then
                 firstChestFull = true
                 turtle.select(3)
                 turtle.digDown()
-                i = 15
+                break
             else
                 turtle.dropDown()
             end
@@ -462,11 +465,14 @@ function InvClear()
         local i = 5
         while i <= 16 do
             turtle.select(i)
+            if turtle.getItemCount(i) == 0 then
+                break
+            end
             if turtle.dropDown() == false then
                 secondChestFull = true
                 turtle.select(4)
                 turtle.digDown()
-                i = 15
+                break
                 print("Second chest full. Press Enter to continue mining after clearing manually.")
                 read()
             else
