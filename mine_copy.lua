@@ -456,6 +456,8 @@ function InvClear()
             end
             i = i + 1
         end
+        turtle.select(3)
+        turtle.digDown()
     end
     if secondChestFull == false and firstChestFull == true then
         turtle.select(4)
@@ -479,6 +481,8 @@ function InvClear()
             end
             i = i + 1
         end
+        turtle.select(4)
+        turtle.digDown()
     end
 end
 
