@@ -586,12 +586,12 @@ if savedState and persistence.askResume("mining") then
 else
     print("Starting new mining operation...")
     print("MineShaft Length(how far forward from turtle start position)")
-    length = read()
-    length = tonumber(length)
-
-    print("MineShaft Width(how many columns to mine)")
     width = read()
     width = tonumber(width)
+    
+    print("MineShaft Width(how many columns to mine)")
+    length = read()
+    length = tonumber(length)
 
     print("Turn left or right(left:l | right:r || default:r)")
     turnDirection = read()
