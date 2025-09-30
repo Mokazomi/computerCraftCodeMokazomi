@@ -27,8 +27,8 @@ function makeStairsDown(length, startLevel)
         if isInventoryFull() then
             print("Inventory is full. Stopping mining.")
             -- Save progress before stopping
-            local currentPos = persistence.getCurrentPosition()
-            persistence.saveStairState(length, i, currentPos)
+            -- local currentPos = persistence.getCurrentPosition()
+            -- persistence.saveStairState(length, i, currentPos)
             return -- Stop mining if inventory is full
         end
         turtle.digUp()
@@ -42,38 +42,38 @@ function makeStairsDown(length, startLevel)
         turtle.forward() -- Move forward
         
         -- Save progress after each level
-        local currentPos = persistence.getCurrentPosition()
-        persistence.saveStairState(length, i, currentPos)
+        -- local currentPos = persistence.getCurrentPosition()
+        -- persistence.saveStairState(length, i, currentPos)
         
         print("lvl" .. i .. "/" .. length .. "|fuel:" .. turtle.getFuelLevel())
     end
 end
 
 -- Load persistence library
-local persistence = require("persistence")
+-- local persistence = require("persistence")
 
 -- Main execution
 checkAndRefuel() -- Initial refuel check before starting
 
 -- Check for saved state
-local savedState = persistence.loadStairState()
+-- local savedState = persistence.loadStairState()
 local length, startLevel
 
-if savedState and persistence.askResume("stair building") then
-    print("Resuming stair building operation...")
-    length = savedState.length
-    startLevel = savedState.currentLevel
-    print("Resuming from level " .. startLevel .. " of " .. length)
-else
-    print("Starting new stair building operation...")
-    -- Ask user for the length of the stairs
-    print("Enter the length of the stairs:")
-    length = tonumber(io.read())
-    startLevel = 1
-end
+-- if savedState and persistence.askResume("stair building") then
+--     print("Resuming stair building operation...")
+--     length = savedState.length
+--     startLevel = savedState.currentLevel
+--     print("Resuming from level " .. startLevel .. " of " .. length)
+-- else
+print("Starting new stair building operation...")
+-- Ask user for the length of the stairs
+print("Enter the length of the stairs:")
+length = tonumber(io.read())
+startLevel = 1
+-- end
 
 makeStairsDown(length, startLevel) -- Start making stairs down
 
 -- Clear saved state when operation completes
-persistence.clearStairState()
+-- persistence.clearStairState()
 print("Stair building operation completed!")
